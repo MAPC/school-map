@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Map, GeoJSON, TileLayer } from 'react-leaflet';
+import { Map, GeoJSON, Marker, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import $ from 'jquery';
 import './WalkshedMap.css';
 
-const endpoint = window.endpoint || '/data/school.json';
+const endpoint = window.endpoint || '/data/school2.json';
 const bounds = [[40.712, -74.227],[40.774, -74.125]];
-const points = [[42,-71],[42,-71]];
+const points = [ { coordinates: [42,-71]}, { coordinates: [42,-71]}];
 const shed_column_names = ['shed_05','shed_10','shed_15','shed_20'];
 const color_map = {
     '2.0': "00FFFF",
@@ -21,7 +21,8 @@ class WalkshedMap extends Component {
 
     this.state = {
       bounds,
-      points
+      points,
+      walksheds: false
     }
   }
 
@@ -29,6 +30,7 @@ class WalkshedMap extends Component {
     this.fetchSchoolData();
   }
 
+  // filter for non-null values and roll them up into a Leaflet geoJSON object
   collect(cols, data) {
     return cols.filter((col) => {
         return data[col]
@@ -41,7 +43,25 @@ class WalkshedMap extends Component {
   fetchSchoolData() {
     return $.getJSON(endpoint)
       .then((data) => {
-        this.setState({ bounds: this.collect(shed_column_names, data).getBounds() });
+
+        // flatten survey responses across surveys into one
+        let responses = data.surveys.reduce(
+          (a,b) => {
+            return a.concat(b.survey_responses.map(
+              response => { 
+                return response.geometry 
+              })
+            );
+          }, 
+          []
+        );
+
+        let sheds = this.collect(shed_column_names, data);
+
+        this.setState({ bounds: sheds.getBounds(),
+                        points: responses,
+                        walksheds: sheds.toGeoJSON(),
+                        school: { lat: data.wgs84_lat, lng: data.wgs84_lng } });
       });
   }
 
@@ -52,14 +72,36 @@ class WalkshedMap extends Component {
   }
 
   render() {
+    const geojson = () => {
+        if(this.state.walksheds) {
+            return <GeoJSON data={this.state.walksheds} />
+        }
+    }
+
+    const school = () => {
+      if(this.state.school) {
+        return <Marker position={this.state.school} />
+      }
+    }
+
+    const survey_responses = () => {
+      let points = this.state.points;
+      if (points.length) {
+        return points.map((point, index) => 
+          <Marker position={[point.coordinates[1], point.coordinates[0]]} key={index} />
+        )
+      }
+    }
+
     return (
       <div className="WalkshedMap">
         <Map bounds={this.state.bounds}>
           <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
           />
-          <GeoJSON data={this.state.bounds} style={this.style.bind(this)} />
+          {survey_responses()}
+          {geojson()}
+          {school()}
         </Map>
       </div>
     );
