@@ -3607,6 +3607,10 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
+leaflet.browser.print@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/leaflet.browser.print/-/leaflet.browser.print-0.3.2.tgz#e1c05ed8e9b3c4dece21717a6671dec4014ee713"
+
 leaflet@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.3.tgz#1f401b98b45c8192134c6c8d69686253805007c8"
