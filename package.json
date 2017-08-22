@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@turf/turf": "^4.6.1",
     "jquery": "^3.2.1",
     "leaflet": "^1.0.3",
     "leaflet.browser.print": "^0.3.2",
