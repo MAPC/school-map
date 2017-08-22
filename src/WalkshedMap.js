@@ -39,15 +39,18 @@ class WalkshedMap extends Component {
   // filter for non-null values and roll them up into a Leaflet geoJSON object
   collect(cols, data) {
     return cols.filter((col) => {
-        return data[col];
+        return !Array.isArray(data[col]);
       })
       .reduce((geojson, current) => {
         let newObject = {};
-        if(data[current]) {
+        if(data[current] && !((data[current] instanceof Array))) {
+
           newObject.type = "Feature";
           newObject.properties = { shed: current };
           newObject.geometry = data[current];
+
         }
+
         return geojson.addData(newObject);
       }, L.geoJson(null));
   }
@@ -55,7 +58,6 @@ class WalkshedMap extends Component {
   fetchSchoolData() {
     return $.getJSON(endpoint)
       .then((data) => {
-
         // flatten survey responses across surveys into one
         let responses = data.surveys.reduce(
           (a,b) => {
