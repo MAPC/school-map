@@ -5,16 +5,29 @@ import $ from 'jquery';
 import LeafletPrintPlugin from './LeafletPrintPlugin';
 import './WalkshedMap.css';
 
-const endpoint = window.endpoint || '/data/school2.json';
+const endpoint = window.endpoint || '/data/school.json';
 const bounds = [[40.712, -74.227],[40.774, -74.125]];
-const points = [ { coordinates: [42,-71]}, { coordinates: [42,-71]}];
-const shed_column_names = ['shed_05','shed_10','shed_15','shed_20'];
-const color_map = {
+
+
+const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
+const shedColorMap = {
     'shed_20': "00FFFF",
     'shed_15': "#6600CC",
     'shed_10': "#9966FF",
     'shed_05': "#FF33FF"
 };
+
+
+const modes = {
+  'w':  { color: '#004DF1', name: 'Walk' },
+  'fv': { color: '#DC533C', name: 'Family Vehicle (only children in your family)' },
+  'cp': { color: '#D49AE8', name: 'Carpool (with children from other families)' },
+  'sb': { color: '#FFF760', name: 'School Bus' },
+  'b':  { color: '#B4E299', name: 'Bicycle' },
+  't':  { color: '#6C357C', name: 'Transit (city bus, subyway, etc.)' },
+  'o':  { color: '#D3D3D3', name: 'Other (skateboard, scooter, inline skates, etc.)' },
+};
+
 
 // initialize non-AMD/reacty leaflet plugin
 LeafletPrintPlugin();
@@ -25,7 +38,7 @@ class WalkshedMap extends Component {
 
     this.state = {
       bounds,
-      points,
+      points: [],
       walksheds: false
     }
   }
@@ -57,18 +70,8 @@ class WalkshedMap extends Component {
       .then((data) => {
 
         // flatten survey responses across surveys into one
-        let responses = data.surveys.reduce(
-          (a,b) => {
-            return a.concat(b.survey_responses.map(
-              response => { 
-                return response.geometry 
-              })
-            );
-          }, 
-          []
-        );
-
-        let sheds = this.collect(shed_column_names, data);
+        const responses = data.surveys.reduce((a,b) => a.concat(b.survey_responses), []);
+        const sheds = this.collect(shedColumnNames, data);
 
         this.setState({ bounds: sheds.getBounds(),
                         points: responses,
@@ -79,7 +82,7 @@ class WalkshedMap extends Component {
 
   style = (feature) => {
     return {
-      color: color_map[feature.properties.distance]
+      color: shedColorMap[feature.properties.distance]
     }
   }
 
@@ -89,9 +92,8 @@ class WalkshedMap extends Component {
             return <GeoJSON data={this.state.walksheds}
                             style= { 
                               (feature) => {
-                                console.log(feature);
                                 return {
-                                  color: color_map[feature.properties.shed],
+                                  color: shedColorMap[feature.properties.shed],
                                   weight: 1,
                                   opacity: 0.3 
                                 } 
@@ -112,17 +114,19 @@ class WalkshedMap extends Component {
 
     const survey_responses = () => {
       let points = this.state.points;
-      if (points.length) {
-        return points.map((point, index) => 
-          <CircleMarker center={[point.coordinates[1], point.coordinates[0]]} 
+      if (points.length > 0) {
+        return points.map((point, index) => {
+          var geom = point.geometry;
+
+          return <CircleMarker center={[geom.coordinates[1], geom.coordinates[0]]} 
                         key={index} 
                         radius={3}
-                        fillColor={"#ff7800"}
+                        fillColor={modes[point.to_school].color}
                         color={"#000"}
                         weight={1}
                         opacity={1}
                         fillOpacity={0.8} />
-        )
+        });
       }
     }
 
