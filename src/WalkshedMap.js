@@ -1,25 +1,10 @@
-import React, { Component } from 'react';
-import { Map, GeoJSON, CircleMarker, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
+import React, { Component } from 'react';
 import LeafletPrintPlugin from './LeafletPrintPlugin';
-import './WalkshedMap.css';
+import { shedColorMap, modes } from './utils/data-maps';
+import { Map, GeoJSON, CircleMarker, TileLayer } from 'react-leaflet';
 
-const shedColorMap = {
-    'shed_20': "00FFFF",
-    'shed_15': "#6600CC",
-    'shed_10': "#9966FF",
-    'shed_05': "#FF33FF"
-};
-
-const modes = {
-  'w':  { color: '#004DF1', name: 'Walk' },
-  'fv': { color: '#DC533C', name: 'Family Vehicle (only children in your family)' },
-  'cp': { color: '#D49AE8', name: 'Carpool (with children from other families)' },
-  'sb': { color: '#FFF760', name: 'School Bus' },
-  'b':  { color: '#B4E299', name: 'Bicycle' },
-  't':  { color: '#6C357C', name: 'Transit (city bus, subyway, etc.)' },
-  'o':  { color: '#D3D3D3', name: 'Other (skateboard, scooter, inline skates, etc.)' },
-};
+import './styles/WalkshedMap.css';
 
 
 // initialize non-AMD/reacty leaflet plugin

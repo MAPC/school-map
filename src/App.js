@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import WalkshedMap from './WalkshedMap';
+import MapLegend from './MapLegend';
 import L from 'leaflet';
 import $ from 'jquery';
-import './App.css';
+
+import './styles/App.css';
 
 const endpoint = window.endpoint || '/data/school.json';
 const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
@@ -65,6 +67,10 @@ class App extends Component {
           points={this.state.points}
           walksheds={this.state.walksheds}
           school={this.state.school}
+        />
+        <MapLegend 
+          points={this.state.points}
+          walksheds={this.state.walksheds}
         />
       </div>
     );
