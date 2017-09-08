@@ -1,6 +1,8 @@
 .MapLegend * { 
   position: relative;
   box-sizing: border-box;
+
+  line-height: initial;
 }
 
 .MapLegend {
@@ -10,10 +12,10 @@
   z-index: 400;
   display: flex;
 
-  width: 370px;
-  padding: 10px 14px;
+  width: 350px;
+  padding: 9px 12px;
 
-  background: #fdfdfd;
+  background: rgba(255,255,255,.7);
 
   border: 1px solid #aaa;
   box-shadow: 3px 3px 4px 0px rgba(10,10,10,.26);
@@ -28,8 +30,11 @@
 
 .MapLegend h4 {
   margin-top: 0;
+  margin-bottom: 8px;
 
-  font-size: 11px;
+  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10px;
   text-align: left;
 }
 
@@ -62,7 +67,7 @@
 
 
 .MapLegend .modes {
-  flex: 1 0 75%; 
+  flex: 1 0 80%; 
 }
 
 .MapLegend .modes li span {
@@ -73,5 +78,5 @@
 }
 
 .MapLegend .walksheds {
-  flex: 1 0 25%;
+  flex: 1 0 20%;
 }
