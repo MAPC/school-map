@@ -6,7 +6,7 @@ import $ from 'jquery';
 
 import './styles/App.css';
 
-const endpoint = window.endpoint || '/data/school.json';
+const endpoint = window.endpoint || '/data/school3.json';
 const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
 
 
@@ -33,13 +33,17 @@ class App extends Component {
         return data[col];
       })
       .reduce((geojson, current) => {
-        let newObject = {};
-        if(data[current]) {
+        if(!Array.isArray(data[current])) {
+          let newObject = {};
+
           newObject.type = "Feature";
           newObject.properties = { shed: current };
           newObject.geometry = data[current];
+
+          return geojson.addData(newObject);
         }
-        return geojson.addData(newObject);
+
+        return geojson;
       }, L.geoJson(null));
   }
 
