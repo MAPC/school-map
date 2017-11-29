@@ -10,7 +10,7 @@ class MapLegend extends Component {
   render() {
 
     const renderModes = () => {
-      const uniqueModeCodes = [...new Set(this.props.points.map(point => point.to_school))];
+      const uniqueModeCodes = [...new Set(this.props.points.map(point => point.to_school))].filter(x => x !== null);
       const uniqueModes = uniqueModeCodes.map(code => modes[code]);
 
       return uniqueModes.map((mode, index) => {

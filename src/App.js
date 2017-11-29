@@ -6,7 +6,7 @@ import $ from 'jquery';
 
 import './styles/App.css';
 
-const endpoint = window.endpoint || '/data/school3.json';
+const endpoint = window.endpoint || '/data/school.json';
 const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
 
 

@@ -56,15 +56,19 @@ class WalkshedMap extends Component {
         return points.map((point, index) => {
           var geom = point.geometry;
 
-          return <CircleMarker center={[geom.coordinates[1], geom.coordinates[0]]} 
-                        key={index} 
-                        radius={3}
-                        fillColor={modes[point.to_school].color}
-                        color={"#000"}
-                        weight={1}
-                        opacity={1}
-                        fillOpacity={0.8} />
-        });
+          if (point.to_school !== null) {
+            return <CircleMarker center={[geom.coordinates[1], geom.coordinates[0]]} 
+                          key={index} 
+                          radius={3}
+                          fillColor={modes[point.to_school].color}
+                          color={"#000"}
+                          weight={1}
+                          opacity={1}
+                          fillOpacity={0.8} />
+          }
+
+          return null;
+        }).filter(x => x !== null);
       }
     };
 
