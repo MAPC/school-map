@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import hexToRgb from './utils/hex-to-rgb';
 import { shedColorMap, modes } from './utils/data-maps';
 
-import './styles/MapLegend.css';
-
 
 class MapLegend extends Component {
+
+
+  componentDidMount() {
+    const legend = ReactDOM.findDOMNode(this.refs.legend);
+    legend.setAttribute('leaflet-browser-print-content', true);
+  }
+
 
   render() {
 
@@ -16,7 +22,12 @@ class MapLegend extends Component {
       return uniqueModes.map((mode, index) => {
         return (
           <li key={index}>
-            <span style={{background: mode.color}}></span>
+            <span>
+              <svg height="20" width="20">
+                <circle r="10" cx="10" cy="10" fill={mode.color}></circle>
+              </svg>
+            </span>
+
             {mode.name}
           </li>
         );
@@ -34,7 +45,12 @@ class MapLegend extends Component {
 
         return (
           <li key={index}>
-            <span style={{background: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, .3)`}}></span>
+            <span>
+              <svg height="25" width="25">
+                <rect height="25" width="25" fill={`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, .3)`}></rect>
+              </svg>
+            </span>
+
             {distance.toFixed(1)} Mile
           </li>
         );
@@ -43,7 +59,7 @@ class MapLegend extends Component {
 
 
     return (
-      <div className="MapLegend">
+      <div className="MapLegend" ref="legend">
 
         <div className="modes">
           <h4>Approx. home locations and travel to school mode</h4>

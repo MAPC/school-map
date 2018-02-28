@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import React, { Component } from 'react';
+import MapLegend from './MapLegend';
 import LeafletPrintPlugin from './LeafletPrintPlugin';
 import { shedColorMap, modes } from './utils/data-maps';
 import { Map, GeoJSON, CircleMarker, TileLayer } from 'react-leaflet';
@@ -81,6 +82,10 @@ class WalkshedMap extends Component {
           {geojson()}
           {school()}
           {survey_responses()}
+          <MapLegend
+            points={this.props.points}
+            walksheds={this.props.walksheds}
+          />
         </Map>
       </div>
     );

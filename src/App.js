@@ -72,10 +72,6 @@ class App extends Component {
           walksheds={this.state.walksheds}
           school={this.state.school}
         />
-        <MapLegend 
-          points={this.state.points}
-          walksheds={this.state.walksheds}
-        />
       </div>
     );
   }
