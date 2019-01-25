@@ -6,9 +6,7 @@ import $ from 'jquery';
 
 import './styles/App.css';
 
-const endpoint = window.endpoint || '/data/school.json';
 const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
-
 
 class App extends Component {
 
@@ -48,7 +46,7 @@ class App extends Component {
   }
 
   fetchSchoolData() {
-    return $.getJSON(endpoint)
+    return $.getJSON(window.endpoint || '/data/school.json')
       .then((data) => {
 
         // flatten survey responses across surveys into one
@@ -66,8 +64,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <WalkshedMap 
-          bounds={this.state.bounds} 
+        <WalkshedMap
+          bounds={this.state.bounds}
           points={this.state.points}
           walksheds={this.state.walksheds}
           school={this.state.school}
