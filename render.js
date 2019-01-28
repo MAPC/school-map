@@ -4,8 +4,10 @@
 
 'use strict';
 
+const fs          = require('fs');
 const http        = require('http');
 const path        = require('path');
+const sharp       = require('sharp');
 const final       = require('finalhandler');
 const puppeteer   = require('puppeteer');
 const serveStatic = require('serve-static');
@@ -28,18 +30,36 @@ async function main() {
     exit(1);
   }
 
+  const tmpPath = path.join('tmp', `${schoolId}.png`);
+  const outPath = path.join('screens', `${schoolId}.png`);
+  const dimScale = 100;
+  const dims = calcDims(dimScale);
+
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.setViewport(calcDims(100));
+  await page.setViewport(dims);
   await page.evaluateOnNewDocument(schid => {
     window.endpoint = `/data/${schid}.json`;
     window.staticRender = true;
   }, schoolId);
   await page.goto(`http://localhost:${server.address().port}`, { waitUntil: 'networkidle0' });
-  await page.screenshot({ path: path.join('screens', `${schoolId}.png`) });
+  await page.screenshot({ path: tmpPath });
   await browser.close();
 
   server.close();
+
+  await (
+    sharp(tmpPath)
+      .extract({
+        left: 0,
+        top: 0,
+        width: dims.width,
+        height: Math.round(dims.height * .666),
+      })
+      .toFile(outPath)
+  );
+
+  fs.unlinkSync(tmpPath);
 
 }; main();
 
@@ -57,7 +77,7 @@ function startServer() {
 
 function calcDims(scale) {
   return {
-    width: 10 * scale,
+    width: 9 * scale,
     height: 6 * scale,
   };
 }
