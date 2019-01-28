@@ -5,6 +5,7 @@
 'use strict';
 
 const fs          = require('fs');
+const os          = require('os');
 const http        = require('http');
 const path        = require('path');
 const sharp       = require('sharp');
@@ -16,25 +17,29 @@ const { argv, exit } = process;
 
 
 async function main() {
+
+  // Startup
   if (argv.length < 3) {
     exit(1);
   }
 
-  const schoolId = argv[2];
-
-  let server = null;
   try {
-    server = startServer();
+    var server = startServer();
   }
   catch(e) {
     exit(1);
   }
 
+
+  // Setup Environment
+  const schoolId = argv[2];
   const tmpPath = path.join('tmp', `${schoolId}.png`);
   const outPath = path.join('screens', `${schoolId}.png`);
   const dimScale = 100;
   const dims = calcDims(dimScale);
 
+
+  // Launch Browser
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setViewport(dims);
@@ -48,6 +53,8 @@ async function main() {
 
   server.close();
 
+
+  // Crop Image
   await (
     sharp(tmpPath)
       .extract({
@@ -81,4 +88,3 @@ function calcDims(scale) {
     height: 6 * scale,
   };
 }
-
