@@ -39,8 +39,6 @@ async function main() {
   const dimScale = 100;
   const dims = calcDims(dimScale);
 
-  console.log(tmpPath);
-
 
   // Launch Browser
   const browser = await puppeteer.launch();
@@ -64,7 +62,7 @@ async function main() {
         left: 0,
         top: 0,
         width: dims.width,
-        height: Math.round(dims.height * .666),
+        height: Math.round(dims.height * dims.ratio),
       })
       .toFile(outPath)
   );
@@ -98,8 +96,15 @@ function uid() {
 
 
 function calcDims(scale) {
+  const base = {
+    width: 9,
+    height: 6,
+  };
+
   return {
-    width: 9 * scale,
-    height: 6 * scale,
+    base,
+    width: base.width * scale,
+    height: base.height * scale,
+    ratio: base.height / base.width,
   };
 }
