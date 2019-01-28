@@ -30,11 +30,12 @@ async function main() {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setViewport(calcDims(80));
-  await page.evaluateOnNewDocument(([ schid, _host ]) => {
+  await page.evaluateOnNewDocument(schid => {
     window.endpoint = `/data/${schid}.json`;
-  }, [ schoolId, host ]);
+    window.staticRender = true;
+  }, schoolId);
   await page.goto(`http://localhost:${port}`, { waitUntil: 'networkidle0' });
-  await page.screenshot({ path: 'screen.png' });
+  await page.screenshot({ path: path.join('screens', `${schoolId}.png`) });
   await browser.close();
 
   server.close();

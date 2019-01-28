@@ -14,8 +14,10 @@ LeafletPrintPlugin();
 class WalkshedMap extends Component {
 
   componentDidMount() {
-    const map = this.refs.map.leafletElement;        
-    L.browserPrint().addTo(map);
+    if (!window.staticRender) {
+      const map = this.refs.map.leafletElement;
+      L.browserPrint().addTo(map);
+    }
   }
 
   style = (feature) => {
@@ -28,13 +30,13 @@ class WalkshedMap extends Component {
     const geojson = () => {
         if (this.props.walksheds) {
             return <GeoJSON data={this.props.walksheds}
-                            style= { 
+                            style= {
                               (feature) => {
                                 return {
                                   color: shedColorMap[feature.properties.shed],
                                   weight: 1,
-                                  opacity: 0.3 
-                                } 
+                                  opacity: 0.3
+                                }
                               }
                             } />
 
@@ -58,8 +60,8 @@ class WalkshedMap extends Component {
           var geom = point.geometry;
 
           if (point.to_school !== null) {
-            return <CircleMarker center={[geom.coordinates[1], geom.coordinates[0]]} 
-                          key={index} 
+            return <CircleMarker center={[geom.coordinates[1], geom.coordinates[0]]}
+                          key={index}
                           radius={3}
                           fillColor={modes[point.to_school].color}
                           color={"#000"}
@@ -75,7 +77,7 @@ class WalkshedMap extends Component {
 
     return (
       <div className="WalkshedMap">
-        <Map bounds={this.props.bounds} ref='map'>
+        <Map bounds={this.props.bounds} zoomControl={!window.staticRender} ref='map'>
           <TileLayer
             url='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
           />
