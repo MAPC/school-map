@@ -10,6 +10,7 @@ const http        = require('http');
 const path        = require('path');
 const sharp       = require('sharp');
 const final       = require('finalhandler');
+const crypto      = require('crypto');
 const puppeteer   = require('puppeteer');
 const serveStatic = require('serve-static');
 
@@ -33,10 +34,12 @@ async function main() {
 
   // Setup Environment
   const schoolId = argv[2];
-  const tmpPath = path.join(os.tmpdir(), `${schoolId}.png`);
+  const tmpPath = path.join(os.tmpdir(), `${schoolId}-${uid()}.png`);
   const outPath = path.join('screens', `${schoolId}.png`);
   const dimScale = 100;
   const dims = calcDims(dimScale);
+
+  console.log(tmpPath);
 
 
   // Launch Browser
@@ -78,6 +81,18 @@ function startServer() {
     http
       .createServer((req, res) => serveFile(req, res, final(req, res)))
       .listen(0) // listen 0 for random port
+  );
+}
+
+
+function uid() {
+  const len = 8;
+
+  return (
+    crypto
+      .randomBytes(len/2)
+      .toString('hex')
+      .slice(0, len)
   );
 }
 
