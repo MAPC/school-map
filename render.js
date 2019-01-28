@@ -33,7 +33,7 @@ async function main() {
 
   // Setup Environment
   const schoolId = argv[2];
-  const tmpPath = path.join('tmp', `${schoolId}.png`);
+  const tmpPath = path.join(os.tmpdir(), `${schoolId}.png`);
   const outPath = path.join('screens', `${schoolId}.png`);
   const dimScale = 100;
   const dims = calcDims(dimScale);
