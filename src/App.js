@@ -7,9 +7,7 @@ import scatter from './utils/scatter';
 
 import './styles/App.css';
 
-const endpoint = window.endpoint || '/data/1079.json';
 const shedColumnNames = ['shed_05','shed_10','shed_15','shed_20'];
-
 
 class App extends Component {
 
@@ -49,7 +47,7 @@ class App extends Component {
   }
 
   fetchSchoolData() {
-    return $.getJSON(endpoint)
+    return $.getJSON(window.endpoint || '/data/school.json')
       .then((data) => {
         // flatten survey responses across surveys into one
         const responses = data.surveys.reduce((a,b) => a.concat(b.survey_responses), []);
